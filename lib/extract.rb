@@ -23,8 +23,11 @@ FILES = [
 
 class Question
 
-  def initialize(raw_text)
+  attr_reader :question_id
+
+  def initialize(raw_text, question_id)
     @text = raw_text
+    @question_id = question_id
   end
 
   def parsed?
@@ -49,6 +52,7 @@ class Question
 
   def to_h
     {
+      id: question_id,
       question: question,
       answer: answer
     }
@@ -82,14 +86,16 @@ def main
   dataset = Dataset.new
   errors = []
 
+  current_id = 1
   FILES.each do |filename|
     raw_text = File.open(FILEPATH + filename).read
     question_nodes = Nokogiri::HTML(raw_text).css('ol').children.children
     question_nodes.each do |question_node|
-      question = Question.new(question_node.text)
+      question = Question.new(question_node.text, current_id)
       if question.parsed?
         dataset.add_to_category(question)
         puts "parsed question for: #{question.category}"
+        current_id += 1
       else
         errors.push(question)
       end
