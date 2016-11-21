@@ -39,15 +39,17 @@ class Question
   end
 
   def question
-    (text.split(':').last.split('*').first rescue nil)
+    question_start = category.length + 1
+    question_end = (text =~ /\*(.*)/) - 1
+    text[question_start..question_end]
   end
 
   def answer
-    (text.split('*').last rescue nil)
+    clean_text (/\*(.*)/.match(text).to_s[1..-1] rescue nil)
   end
 
   def category
-    (text.split(':').first rescue nil)
+    clean_text (/.+?(?=: )/.match(text).to_s rescue nil)
   end
 
   def to_h
@@ -56,6 +58,14 @@ class Question
       question: question,
       answer: answer
     }
+  end
+
+  private
+
+  def clean_text(raw_text)
+    if !raw_text.nil?
+      raw_text.strip
+    end
   end
 end
 
