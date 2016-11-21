@@ -41,19 +41,28 @@ class Question
   def question
     question_start = category.length + 1
     question_end = (text =~ /\*(.*)/) - 1
-    text[question_start..question_end].strip
+    stripped_question = text[question_start..question_end].strip
+    unless stripped_question.empty?
+      stripped_question
+    end
   rescue
     nil
   end
 
   def answer
-    /\*(.*)/.match(text).to_s[1..-1].strip
+    stripped_answer = /\*(.*)/.match(text).to_s[1..-1].strip
+    unless stripped_answer.empty?
+      stripped_answer
+    end
   rescue
     nil
   end
 
   def category
-    /.+?(?=: )/.match(text).to_s.strip
+    stripped_category = /.+?(?=: )/.match(text).to_s.strip
+    unless stripped_category.empty?
+      stripped_category
+    end
   rescue
     nil
   end
