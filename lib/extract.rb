@@ -40,16 +40,20 @@ class Question
 
   def question
     question_start = category.length + 1
-    question_end = (text =~ /\*(.*)/) - 1
-    text[question_start..question_end]
+    question_end = (text =~ /\*(.*)/)
+    if question_end.nil?
+      nil
+    else
+      text[question_start..question_end - 1]
+    end
   end
 
   def answer
-    clean_text (/\*(.*)/.match(text).to_s[1..-1] rescue nil)
+    /\*(.*)/.match(text).to_s[1..-1]
   end
 
   def category
-    clean_text (/.+?(?=: )/.match(text).to_s rescue nil)
+    /.+?(?=: )/.match(text).to_s
   end
 
   def to_h
@@ -58,14 +62,6 @@ class Question
       question: question,
       answer: answer
     }
-  end
-
-  private
-
-  def clean_text(raw_text)
-    if !raw_text.nil?
-      raw_text.strip
-    end
   end
 end
 
